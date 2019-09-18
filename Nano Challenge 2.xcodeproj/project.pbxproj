@@ -15,6 +15,7 @@
 		13266F1623310260001AF421 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 13266F1423310260001AF421 /* LaunchScreen.storyboard */; };
 		13266F2123310260001AF421 /* Nano_Challenge_2Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 13266F2023310260001AF421 /* Nano_Challenge_2Tests.swift */; };
 		13266F2C23310261001AF421 /* Nano_Challenge_2UITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 13266F2B23310261001AF421 /* Nano_Challenge_2UITests.swift */; };
+		137CC56B23322B1700E89BC0 /* icons8-form-64.png in Resources */ = {isa = PBXBuildFile; fileRef = 137CC56A23322B1700E89BC0 /* icons8-form-64.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -49,6 +50,7 @@
 		13266F2723310261001AF421 /* Nano Challenge 2UITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Nano Challenge 2UITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		13266F2B23310261001AF421 /* Nano_Challenge_2UITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Nano_Challenge_2UITests.swift; sourceTree = "<group>"; };
 		13266F2D23310261001AF421 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		137CC56A23322B1700E89BC0 /* icons8-form-64.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "icons8-form-64.png"; path = "../../../Downloads/icons8-form-64.png"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -105,6 +107,7 @@
 				13266F1223310260001AF421 /* Assets.xcassets */,
 				13266F1423310260001AF421 /* LaunchScreen.storyboard */,
 				13266F1723310260001AF421 /* Info.plist */,
+				137CC56A23322B1700E89BC0 /* icons8-form-64.png */,
 				13266F0F23310260001AF421 /* Nano_Challenge_2.xcdatamodeld */,
 			);
 			path = "Nano Challenge 2";
@@ -233,6 +236,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				13266F1623310260001AF421 /* LaunchScreen.storyboard in Resources */,
+				137CC56B23322B1700E89BC0 /* icons8-form-64.png in Resources */,
 				13266F1323310260001AF421 /* Assets.xcassets in Resources */,
 				13266F0E23310260001AF421 /* Main.storyboard in Resources */,
 			);
