@@ -66,6 +66,7 @@ class ViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSo
     @IBOutlet weak var device3TextField: UITextField!
     @IBOutlet weak var sessionSegmented: UISegmentedControl!
     @IBOutlet weak var endDate: UITextField!
+    @IBOutlet weak var submitBtn: UIButton!
     @IBAction func submitButton(_ sender: UIButton) {
         let context:LAContext = LAContext()
         
@@ -94,21 +95,13 @@ class ViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSo
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        reasonTextView.layer.borderWidth = 0.5
+        submitBtn.layer.cornerRadius = 16
+       reasonTextView.layer.borderWidth = 0.5
         reasonTextView.layer.borderColor = UIColor.gray.cgColor
         showDatePicker()
         self.pickUp(deviceTextField)
         self.pickUp(device2TextField)
         self.pickUp(device3TextField)
-        myPickerView.dataSource = self
-        myPickerView.delegate = self
-        myPickerView2.dataSource = self
-        myPickerView2.delegate = self
-        myPickerView3.dataSource = self
-        myPickerView3.delegate = self
-        myPickerView.tag = 1
-        myPickerView2.tag = 2
-        myPickerView3.tag = 3
     }
     
     func showDatePicker(){
