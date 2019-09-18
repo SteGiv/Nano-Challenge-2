@@ -20,11 +20,37 @@ class ViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSo
     }
     
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-        return pickerData[row]
+        if pickerView.tag == 1
+        {
+            return pickerData[row]
+        }
+        else if pickerView.tag == 2
+        {
+            return pickerData[row]
+        }
+        else if pickerView.tag == 3
+        {
+            return pickerData[row]
+        }
+        else
+        {
+            return nil
+        }
     }
     
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-        deviceTextField.text = pickerData[row]
+        if pickerView.tag == 1
+        {
+            deviceTextField.text = pickerData[row]
+        }
+        else if pickerView.tag == 2
+        {
+            device2TextField.text = pickerData[row]
+        }
+        else
+        {
+            device3TextField.text = pickerData[row]
+        }
         
     }
     
@@ -74,6 +100,15 @@ class ViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSo
         self.pickUp(deviceTextField)
         self.pickUp(device2TextField)
         self.pickUp(device3TextField)
+        myPickerView.dataSource = self
+        myPickerView.delegate = self
+        myPickerView2.dataSource = self
+        myPickerView2.delegate = self
+        myPickerView3.dataSource = self
+        myPickerView3.delegate = self
+        myPickerView.tag = 1
+        myPickerView2.tag = 2
+        myPickerView3.tag = 3
     }
     
     func showDatePicker(){
