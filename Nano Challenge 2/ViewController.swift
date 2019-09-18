@@ -24,7 +24,13 @@ class ViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSo
     }
     
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-        deviceTextField.text = pickerData[row]
+        if(deviceTextField.isEditing){
+            deviceTextField.text = pickerData[row]
+        }else if(device2TextField.isEditing){
+            device2TextField.text = pickerData[row]
+        }else if(device3TextField.isEditing){
+            device3TextField.text = pickerData[row]
+        }
     }
     
 //    func textFieldDidBeginEditing(_ textField: UITextField) {
@@ -40,29 +46,71 @@ class ViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSo
     @IBOutlet weak var sessionSegmented: UISegmentedControl!
     @IBOutlet weak var endDate: UITextField!
     @IBOutlet weak var submitBtn: UIButton!
+    @IBOutlet weak var messageLabel: UILabel!
     @IBAction func submitButton(_ sender: UIButton) {
-        let context:LAContext = LAContext()
-        
-        if context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: nil)
+        if (nameTextField.text == "")
         {
-            context.evaluatePolicy(LAPolicy.deviceOwnerAuthenticationWithBiometrics, localizedReason: "Scan To Submit the Form") { (good, error) in
-                if good
-                {
-                    print("Success")
-                }
-                else
-                {
-                    print("Try Again")
+            messageLabel.text = "Fill your Name!"
+        }
+        else if(deviceTextField.text == "")
+        {
+            messageLabel.text = "You must fill Device 1"
+        }
+        else if(device2TextField.text == deviceTextField.text)
+        {
+            messageLabel.text = "You cannot fill the same device!"
+        }
+        else if(device3TextField.text == device2TextField.text)
+        {
+             messageLabel.text = "You cannot fill the same device!"
+        }
+        else if(device3TextField.text == deviceTextField.text)
+        {
+             messageLabel.text = "You cannot fill the same device!"
+        }
+        else if(startDate.text == "")
+        {
+            messageLabel.text = "Fill your Start Date!"
+        }
+        else if (endDate.text == "")
+        {
+            messageLabel.text = "Fill your End Date!"
+        }
+        else if(dateEnd <= dateStart)
+        {
+            messageLabel.text = "Check Your End Date!!"
+        }
+        else if(reasonTextView.text == "")
+        {
+            messageLabel.text = "Enter The Reason!"
+        }
+        else
+        {
+            let context:LAContext = LAContext()
+            
+            if context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: nil)
+            {
+                context.evaluatePolicy(LAPolicy.deviceOwnerAuthenticationWithBiometrics, localizedReason: "Scan To Submit the Form") { (good, error) in
+                    if good
+                    {
+                        print("Success")
+                    }
+                    else
+                    {
+                        print("Try Again")
+                    }
                 }
             }
         }
-        
     }
     var myPickerView : UIPickerView!
     
     var pickerData = ["Ipad","Ipad Pro", "Airpods", "Apple Watch Series 3 42mm", "Apple Watch Series 4 40mm", "Apple Watch Series 4 44mm", "Apple Pencil"]
     
     let datePicker = UIDatePicker()
+    
+    var dateStart:Date!
+    var dateEnd:Date!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -104,6 +152,7 @@ class ViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSo
         let formatter = DateFormatter()
         formatter.dateFormat = "dd MMM yyyy"
         startDate.text = formatter.string(from: datePicker.date)
+        dateStart = datePicker.date
         self.view.endEditing(true)
     }
     
@@ -111,6 +160,7 @@ class ViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSo
         let formatter = DateFormatter()
         formatter.dateFormat = "dd MMM yyyy"
         endDate.text = formatter.string(from: datePicker.date)
+        dateEnd = datePicker.date
         self.view.endEditing(true)
     }
     
