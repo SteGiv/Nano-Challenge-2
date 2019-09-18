@@ -20,38 +20,11 @@ class ViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSo
     }
     
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-        if pickerView.tag == 1
-        {
-            return pickerData[row]
-        }
-        else if pickerView.tag == 2
-        {
-            return pickerData[row]
-        }
-        else if pickerView.tag == 3
-        {
-            return pickerData[row]
-        }
-        else
-        {
-            return nil
-        }
+       return pickerData[row]
     }
     
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-        if pickerView.tag == 1
-        {
-            deviceTextField.text = pickerData[row]
-        }
-        else if pickerView.tag == 2
-        {
-            device2TextField.text = pickerData[row]
-        }
-        else
-        {
-            device3TextField.text = pickerData[row]
-        }
-        
+        deviceTextField.text = pickerData[row]
     }
     
 //    func textFieldDidBeginEditing(_ textField: UITextField) {
@@ -86,8 +59,6 @@ class ViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSo
         
     }
     var myPickerView : UIPickerView!
-    var myPickerView2 : UIPickerView!
-    var myPickerView3 : UIPickerView!
     
     var pickerData = ["Ipad","Ipad Pro", "Airpods", "Apple Watch Series 3 42mm", "Apple Watch Series 4 40mm", "Apple Watch Series 4 44mm", "Apple Pencil"]
     
