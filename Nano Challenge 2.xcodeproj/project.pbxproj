@@ -51,6 +51,7 @@
 		13266F2B23310261001AF421 /* Nano_Challenge_2UITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Nano_Challenge_2UITests.swift; sourceTree = "<group>"; };
 		13266F2D23310261001AF421 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		137CC56A23322B1700E89BC0 /* icons8-form-64.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "icons8-form-64.png"; path = "../../../Downloads/icons8-form-64.png"; sourceTree = "<group>"; };
+		137CC56C23325F1C00E89BC0 /* Nano Challenge 2.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Nano Challenge 2.entitlements"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -101,6 +102,7 @@
 		13266F0723310260001AF421 /* Nano Challenge 2 */ = {
 			isa = PBXGroup;
 			children = (
+				137CC56C23325F1C00E89BC0 /* Nano Challenge 2.entitlements */,
 				13266F0823310260001AF421 /* AppDelegate.swift */,
 				13266F0A23310260001AF421 /* ViewController.swift */,
 				13266F0C23310260001AF421 /* Main.storyboard */,
@@ -199,6 +201,11 @@
 				TargetAttributes = {
 					13266F0423310260001AF421 = {
 						CreatedOnToolsVersion = 10.3;
+						SystemCapabilities = {
+							com.apple.Push = {
+								enabled = 1;
+							};
+						};
 					};
 					13266F1B23310260001AF421 = {
 						CreatedOnToolsVersion = 10.3;
@@ -440,6 +447,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = "Nano Challenge 2/Nano Challenge 2.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 9XU3SB34G3;
 				INFOPLIST_FILE = "Nano Challenge 2/Info.plist";
@@ -458,6 +466,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = "Nano Challenge 2/Nano Challenge 2.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 9XU3SB34G3;
 				INFOPLIST_FILE = "Nano Challenge 2/Info.plist";

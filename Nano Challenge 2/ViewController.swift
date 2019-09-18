@@ -8,8 +8,10 @@
 
 import UIKit
 import LocalAuthentication
+import CoreLocation
+import UserNotifications
 
-class ViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSource, UITextFieldDelegate{
+class ViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSource, UITextFieldDelegate, UITextViewDelegate, CLLocationManagerDelegate, UNUserNotificationCenterDelegate {
     
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
         return 1
@@ -33,9 +35,6 @@ class ViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSo
         }
     }
     
-//    func textFieldDidBeginEditing(_ textField: UITextField) {
-//        self.pickUp(deviceTextField)
-//    }
     @IBOutlet weak var startDate: UITextField!
     @IBOutlet weak var nameTextField: UITextField!
     @IBOutlet weak var genderSegmented: UISegmentedControl!
@@ -52,6 +51,10 @@ class ViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSo
         {
             messageLabel.text = "Fill your Name!"
         }
+        else if(nameTextField.text!.count > 25)
+        {
+            messageLabel.text = "Name cannot be more than 25 Characters"
+        }
         else if(deviceTextField.text == "")
         {
             messageLabel.text = "You must fill Device 1"
@@ -60,7 +63,7 @@ class ViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSo
         {
             messageLabel.text = "You cannot fill the same device!"
         }
-        else if(device3TextField.text == device2TextField.text)
+        else if(device2TextField.text != "" && device3TextField.text == device2TextField.text)
         {
              messageLabel.text = "You cannot fill the same device!"
         }
@@ -86,18 +89,28 @@ class ViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSo
         }
         else
         {
-            let context:LAContext = LAContext()
-            
-            if context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: nil)
+            messageLabel.text = ""
+            if (auth == false)
             {
-                context.evaluatePolicy(LAPolicy.deviceOwnerAuthenticationWithBiometrics, localizedReason: "Scan To Submit the Form") { (good, error) in
-                    if good
-                    {
-                        print("Success")
-                    }
-                    else
-                    {
-                        print("Try Again")
+                let alert = UIAlertController(title: "Warning", message: "You Must Be Inside Academy To Borrow Device", preferredStyle: .alert)
+                alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+                self.present(alert, animated: true, completion: nil)
+            }
+            else
+            {
+                let context:LAContext = LAContext()
+                
+                if context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: nil)
+                {
+                    context.evaluatePolicy(LAPolicy.deviceOwnerAuthenticationWithBiometrics, localizedReason: "Scan To Submit the Form") { (good, error) in
+                        if good
+                        {
+                            print("Success")
+                        }
+                        else
+                        {
+                            print("Try Again")
+                        }
                     }
                 }
             }
@@ -111,16 +124,140 @@ class ViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSo
     
     var dateStart:Date!
     var dateEnd:Date!
+    let locationManager: CLLocationManager = CLLocationManager()
+    var auth:Bool = false
+    var curretLocation: CLLocation!
+    var geoFenceRegion: CLCircularRegion!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         submitBtn.layer.cornerRadius = 16
        reasonTextView.layer.borderWidth = 0.5
         reasonTextView.layer.borderColor = UIColor.gray.cgColor
+        requestPermissionNotifications()
+        locationManager.delegate = self
+        locationManager.requestAlwaysAuthorization()
+        locationManager.requestWhenInUseAuthorization()
+        locationManager.startUpdatingLocation()
+        locationManager.distanceFilter = 50
+        
+        geoFenceRegion = CLCircularRegion(center: CLLocationCoordinate2DMake(-6.302122, 106.652183), radius: 50, identifier: "Apple Academy")
+        
+        locationManager.startMonitoring(for: geoFenceRegion)
+        
+//        detectUser()
         showDatePicker()
         self.pickUp(deviceTextField)
         self.pickUp(device2TextField)
         self.pickUp(device3TextField)
+        nameTextField.delegate = self
+        reasonTextView.delegate = self
+    }
+    func detectUser()
+    {
+        if( CLLocationManager.authorizationStatus() == .authorizedWhenInUse || CLLocationManager.authorizationStatus() == .authorizedAlways)
+        {
+            curretLocation = locationManager.location
+        }
+        let distanceInMeters = curretLocation.distance(from: CLLocation(latitude: (geoFenceRegion?.center.latitude)!, longitude: (geoFenceRegion?.center.longitude)!))
+        if(distanceInMeters <= geoFenceRegion.radius/2)
+            {
+                auth = true
+            }
+    }
+    
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        for currentLocation in locations
+        {
+            print("\(String(describing: index)): \(currentLocation)")
+        }
+    }
+    func locationManager(_ manager: CLLocationManager, didEnterRegion region: CLRegion) {
+        print("Entered : \(region.identifier)")
+        postLocalNotifications(eventTitle : "Entered: \(region.identifier)", body: "Hello")
+        auth = true
+    }
+    
+    func locationManager(_ manager: CLLocationManager, didExitRegion region: CLRegion) {
+        print("Exited : \(region.identifier)")
+        postLocalNotifications(eventTitle : "Exited: \(region.identifier)", body: "See You Next Time")
+        auth = false
+    }
+    func requestPermissionNotifications(){
+        let application =  UIApplication.shared
+        
+        if #available(iOS 10.0, *) {
+            // For iOS 10 display notification (sent via APNS)
+            UNUserNotificationCenter.current().delegate = self
+            
+            let authOptions: UNAuthorizationOptions = [.alert, .badge, .sound]
+            UNUserNotificationCenter.current().requestAuthorization(options: authOptions) { (isAuthorized, error) in
+                if( error != nil ){
+                    print(error!)
+                }else{
+                    if( isAuthorized ){
+                        print("authorized")
+                        NotificationCenter.default.post(Notification(name: Notification.Name("AUTHORIZED")))
+                        self.detectUser()
+                    }else{
+                        let pushPreference = UserDefaults.standard.bool(forKey: "PREF_PUSH_NOTIFICATIONS")
+                        if pushPreference == false {
+                            let alert = UIAlertController(title: "Turn on Notifications", message: "Push notifications are turned off.", preferredStyle: .alert)
+                            alert.addAction(UIAlertAction(title: "Turn on notifications", style: .default, handler: { (alertAction) in
+                                guard let settingsUrl = URL(string: UIApplication.openSettingsURLString) else {
+                                    return
+                                }
+                                
+                                if UIApplication.shared.canOpenURL(settingsUrl) {
+                                    UIApplication.shared.open(settingsUrl, completionHandler: { (success) in
+                                        // Checking for setting is opened or not
+                                        print("Setting is opened: \(success)")
+                                        self.detectUser()
+                                    })
+                                }
+                                UserDefaults.standard.set(true, forKey: "PREF_PUSH_NOTIFICATIONS")
+                            }))
+                            alert.addAction(UIAlertAction(title: "No thanks.", style: .default, handler: { (actionAlert) in
+                                print("user denied")
+                                UserDefaults.standard.set(true, forKey: "PREF_PUSH_NOTIFICATIONS")
+                            }))
+                            let viewController = UIApplication.shared.keyWindow!.rootViewController
+                            DispatchQueue.main.async {
+                                viewController?.present(alert, animated: true, completion: nil)
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        else {
+            let settings: UIUserNotificationSettings =
+                UIUserNotificationSettings(types: [.alert, .badge, .sound], categories: nil)
+            application.registerUserNotificationSettings(settings)
+        }
+    }
+    
+    func postLocalNotifications(eventTitle:String, body:String){
+        let center = UNUserNotificationCenter.current()
+        
+        let content = UNMutableNotificationContent()
+        content.title = eventTitle
+        content.body = body
+        content.sound = UNNotificationSound.default
+        
+        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)
+        
+        let notificationRequest:UNNotificationRequest = UNNotificationRequest(identifier: "Region", content: content, trigger: trigger)
+        
+        center.add(notificationRequest, withCompletionHandler: { (error) in
+            if let error = error {
+                // Something went wrong
+                print(error)
+            }
+            else{
+                print("added")
+            }
+        })
     }
     
     func showDatePicker(){
@@ -200,6 +337,18 @@ class ViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSo
         deviceTextField.resignFirstResponder()
         device2TextField.resignFirstResponder()
         device3TextField.resignFirstResponder()
+    }
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return true
+    }
+    func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
+        if text == "\n"{
+            textView.resignFirstResponder()
+            return true
+        }
+        return true
     }
 
 }
